@@ -1,0 +1,9 @@
+pypdf
+pinecone-client
+python-dotenv
+typing
+ollama
+fastapi
+uvicorn
+streamlit
+requests
