@@ -1,9 +1,14 @@
+# pyrefly: ignore [missing-import]
 import streamlit as st
 import requests
 import time
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # --- Setup ---
-API_URL = "http://localhost:8000/query"
+API_URL = os.getenv("API_URL", "http://localhost:8000/query")
 
 st.set_page_config(
     page_title="AI Power | Chat Bot",
@@ -97,7 +102,32 @@ st.markdown("""
 with st.sidebar:
     st.markdown("<h2 style='text-align: center; color: #ff4b91;'>🔮 AI HUB</h2>", unsafe_allow_html=True)
     st.divider()
-    st.button("✨ New Chat", use_container_width=True)
+    
+    st.markdown("<h4 style='color: #1a1a1a;'>📄 Upload Document</h4>", unsafe_allow_html=True)
+    uploaded_file = st.file_uploader("Upload a PDF to index it into Pinecone:", type=["pdf"], label_visibility="collapsed")
+    if uploaded_file is not None:
+        if st.button("Process & Index PDF", use_container_width=True):
+            with st.spinner("Processing & indexing PDF..."):
+                try:
+                    # Dynamically get backend URL base path
+                    base_url = API_URL.split('/query')[0]
+                    upload_url = f"{base_url}/upload"
+                    
+                    files = {"file": (uploaded_file.name, uploaded_file.getvalue(), "application/pdf")}
+                    res = requests.post(upload_url, files=files)
+                    if res.status_code == 200:
+                        msg = res.json().get("message", "PDF indexed successfully!")
+                        st.success(msg)
+                    else:
+                        detail = res.json().get("detail", "Unknown error")
+                        st.error(f"Failed to process: {detail}")
+                except Exception as e:
+                    st.error(f"Connection to backend failed: {e}")
+                    
+    st.divider()
+    if st.button("✨ New Chat", use_container_width=True):
+        st.session_state.messages = []
+        st.rerun()
     st.button("📁 Documents", use_container_width=True)
     st.button("⚙️ Settings", use_container_width=True)
 

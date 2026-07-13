@@ -1,26 +1,41 @@
 from dotenv import load_dotenv
-import ollama
+# pyrefly: ignore [missing-import]
+import google.generativeai as genai
 import os
-import requests
 
+load_dotenv()
 
-Embed_Model="nomic-embed-text:latest"
+# Configure the Gemini API
+api_key = os.getenv("GEMINI_API_KEY")
+if api_key:
+    genai.configure(api_key=api_key)
+
+Embed_Model="models/text-embedding-004"
 
 def embed_chunks(chunks):
+    if not api_key:
+        raise ValueError("GEMINI_API_KEY environment variable is not set. Please set it in your environment or .env file.")
+        
     embeddings_list = []
-    for chunk in chunks:
-        response = ollama.embeddings(
+    # Batch embeddings into chunks of 100 to reduce API calls and avoid Rate Limits
+    batch_size = 100
+    for i in range(0, len(chunks), batch_size):
+        batch = chunks[i:i+batch_size]
+        response = genai.embed_content(
             model=Embed_Model,
-            prompt=chunk
+            content=batch
         )
-        embeddings_list.append(response["embedding"])
+        embeddings_list.extend(response["embedding"])
     
     return embeddings_list
 
 
 def embed_query(query):
-    response=ollama.embeddings(
-        prompt=query,
-        model=Embed_Model
+    if not api_key:
+        raise ValueError("GEMINI_API_KEY environment variable is not set. Please set it in your environment or .env file.")
+        
+    response = genai.embed_content(
+        model=Embed_Model,
+        content=query
      )
     return response["embedding"]

@@ -1,3 +1,58 @@
+<<<<<<< HEAD
+# 🔮 AI Power RAG Engine - Personalized Chat Bot
+
+A premium, glassmorphic Retrieval-Augmented Generation (RAG) chatbot designed to provide intelligent answers based on your own specialized documents.
+
+## 🚀 Problem Statement
+
+In the era of massive information, standard Large Language Models (LLMs) often suffer from two major limitations:
+1. **Knowledge Cutoff**: They cannot access information updated after their training.
+2. **Context Blindness**: They lack access to private or highly specialized documents (e.g., internal company reports, personal PDFs, or niche technical manuals).
+
+Users are often forced to manually search through hundreds of pages of documentation, leading to inefficiency and missed insights.
+
+## ✨ Solution: The RAG Advantage
+
+This project implements a **Retrieval-Augmented Generation (RAG)** architecture to bridge the gap between static LLMs and dynamic, private data. Instead of retraining a model, we provide the LLM with relevant context retrieved from your own documents in real-time.
+
+### How it Works:
+1. **Document Ingestion**: Extracting text from PDFs using a custom parser.
+2. **Intelligent Chunking**: Breaking down long documents into semantically coherent segments.
+3. **Vector Embeddings**: Converting text segments into high-dimensional vectors.
+4. **Pinecone Integration**: Storing vectors in a high-performance vector database for lightning-fast similarity search.
+5. **Contextual Retrieval**: For every user query, the system retrieves only the most relevant document chunks.
+6. **Smart Generation**: An LLM synthesizes an accurate, context-aware response based on the retrieved data.
+
+## 🛠️ Tech Stack
+
+- **Frontend**: Streamlit (Premium Glassmorphic UI)
+- **Backend**: FastAPI (High-performance API)
+- **LLM/Embeddings**: Google Gemini API (gemini-1.5-flash & text-embedding-004)
+- **Vector Database**: Pinecone
+- **Processing**: Python (PyPDF, Requests, Uvicorn)
+
+## 📁 Project Structure
+
+- `app.py`: Streamlit frontend with a floating "Orb" design.
+- `main.py`: FastAPI server handling query endpoints.
+- `QueryProcessor.py`: The core RAG logic (Embed -> Search -> Generate).
+- `vectorstore.py`: Pinecone integration for vector storage and search.
+- `embedder.py`: logic for generating text embeddings using Google Gemini API.
+- `pdfreader.py`: PDF text extraction utility.
+- `chunker.py`: Text chunking algorithms.
+- `llm.py`: Logic for querying the Gemini model via Google Gemini API.
+
+## 🎨 UI Preview
+
+The application features a modern, "AI Hub" design with:
+- **Radial gradients** and **glassmorphism** effects.
+- **Floating animation** for the central AI orb.
+- **Typing effects** for a natural chat experience.
+- **Responsive sidebar** for chat management and settings.
+
+---
+*Built with ❤️ for intelligent document interaction.*
+=======
 # 🚀 Smart Knowledge Assistant: Privacy-First RAG System
 
 A high-performance **Retrieval-Augmented Generation (RAG)** system built for privacy and scalability. This project allows you to chat with your PDF documents with enterprise-grade accuracy, utilizing local embeddings for data privacy and Pinecone for lightning-fast semantic retrieval.
@@ -82,3 +137,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 📄 License
 Distributed under the MIT License.
+>>>>>>> 9c3e8c00ec81876c11e27b61c6f18bb2fce1459f
