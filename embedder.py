@@ -10,7 +10,7 @@ api_key = os.getenv("GEMINI_API_KEY")
 if api_key:
     genai.configure(api_key=api_key)
 
-Embed_Model="models/embedding-001"
+Embed_Model="models/gemini-embedding-001"
 
 def embed_chunks(chunks):
     if not api_key:
@@ -23,7 +23,8 @@ def embed_chunks(chunks):
         batch = chunks[i:i+batch_size]
         response = genai.embed_content(
             model=Embed_Model,
-            content=batch
+            content=batch,
+            output_dimensionality=768
         )
         embeddings_list.extend(response["embedding"])
     
@@ -36,6 +37,7 @@ def embed_query(query):
         
     response = genai.embed_content(
         model=Embed_Model,
-        content=query
+        content=query,
+        output_dimensionality=768
      )
     return response["embedding"]
