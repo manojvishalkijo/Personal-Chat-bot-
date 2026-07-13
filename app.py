@@ -10,6 +10,17 @@ load_dotenv()
 # --- Setup ---
 API_URL = os.getenv("API_URL", "http://localhost:8000/query")
 
+# Normalize base, query, and upload URLs to tolerate missing /query suffixes
+api_url_clean = API_URL.rstrip('/')
+if api_url_clean.endswith('/query'):
+    QUERY_URL = api_url_clean
+    BASE_URL = api_url_clean[:-6].rstrip('/')
+else:
+    QUERY_URL = f"{api_url_clean}/query"
+    BASE_URL = api_url_clean
+
+UPLOAD_URL = f"{BASE_URL}/upload"
+
 st.set_page_config(
     page_title="AI Power | Chat Bot",
     page_icon="🔮",
@@ -109,12 +120,8 @@ with st.sidebar:
         if st.button("Process & Index PDF", use_container_width=True):
             with st.spinner("Processing & indexing PDF..."):
                 try:
-                    # Dynamically get backend URL base path
-                    base_url = API_URL.split('/query')[0]
-                    upload_url = f"{base_url}/upload"
-                    
                     files = {"file": (uploaded_file.name, uploaded_file.getvalue(), "application/pdf")}
-                    res = requests.post(upload_url, files=files)
+                    res = requests.post(UPLOAD_URL, files=files)
                     if res.status_code == 200:
                         msg = res.json().get("message", "PDF indexed successfully!")
                         st.success(msg)
@@ -162,7 +169,7 @@ if prompt := st.chat_input("Ask me anything..."):
         
         try:
             # Call FastAPI Backend
-            response = requests.post(API_URL, json={"query": prompt})
+            response = requests.post(QUERY_URL, json={"query": prompt})
             if response.status_code == 200:
                 answer = response.json().get("answer", "No answer found.")
                 
