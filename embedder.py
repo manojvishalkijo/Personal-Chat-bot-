@@ -10,7 +10,7 @@ api_key = os.getenv("GEMINI_API_KEY")
 if api_key:
     genai.configure(api_key=api_key)
 
-Embed_Model="models/text-embedding-004"
+Embed_Model="models/embedding-001"
 
 def embed_chunks(chunks):
     if not api_key:
