@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from QueryProcessor import process_query
 import uvicorn
@@ -13,6 +14,15 @@ from vectorstore import store_inpinecone
 load_dotenv()
 
 app = FastAPI(title="AI Power RAG Engine")
+
+# Add CORS middleware to avoid cross-origin request issues from frontends
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class QueryRequest(BaseModel):
     query: str
@@ -33,6 +43,8 @@ async def query_endpoint(request: QueryRequest):
     try:
         answer = process_query(request.query)
         return QueryResponse(answer=answer)
+    except HTTPException as he:
+        raise he
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -60,6 +72,8 @@ async def upload_pdf(file: UploadFile = File(...)):
         store_inpinecone(chunks, embedded_chunks)
         
         return {"status": "success", "message": f"Successfully indexed {len(chunks)} chunks from {file.filename}"}
+    except HTTPException as he:
+        raise he
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
