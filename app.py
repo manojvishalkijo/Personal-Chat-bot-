@@ -175,6 +175,10 @@ if prompt := st.chat_input("Ask me anything..."):
                 placeholder.markdown(full_text)
                 st.session_state.messages.append({"role": "assistant", "content": answer})
             else:
-                placeholder.error("Backend error. Make sure main.py is running.")
+                try:
+                    error_detail = response.json().get("detail", "No details provided.")
+                except Exception:
+                    error_detail = response.text or "Unknown error."
+                placeholder.error(f"Backend error ({response.status_code}): {error_detail}")
         except Exception as e:
             placeholder.error(f"Connection failed: {e}")

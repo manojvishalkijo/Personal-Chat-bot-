@@ -20,6 +20,10 @@ class QueryRequest(BaseModel):
 class QueryResponse(BaseModel):
     answer: str
 
+@app.get("/")
+async def root():
+    return {"status": "online", "message": "FastAPI RAG Backend is running"}
+
 @app.get("/health")
 async def health():
     return {"status": "online"}
